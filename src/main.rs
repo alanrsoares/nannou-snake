@@ -49,29 +49,14 @@ fn event(_app: &App, model: &mut Model, event: Event) {
             simple: Some(window_event),
             ..
         } => match window_event {
-            KeyPressed(Key::Left) => {
-                if model.direction != Direction::Right {
-                    model.direction = Direction::Left;
+            KeyPressed(direction) => match Direction::from_key(direction) {
+                Some(dir) => {
+                    if dir != model.direction.opposite() {
+                        model.direction = dir;
+                    }
                 }
-            }
-            KeyPressed(Key::Right) => {
-                if model.direction != Direction::Left {
-                    model.direction = Direction::Right;
-                }
-            }
-            KeyPressed(Key::Up) => {
-                if model.direction != Direction::Down {
-                    model.direction = Direction::Up;
-                }
-            }
-            KeyPressed(Key::Down) => {
-                if model.direction != Direction::Up {
-                    model.direction = Direction::Down;
-                }
-            }
-            KeyPressed(Key::Space) => {
-                model.toggle_pause();
-            }
+                None => (),
+            },
             _ => (),
         },
         _ => (),

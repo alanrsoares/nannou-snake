@@ -31,6 +31,25 @@ impl Direction {
             Direction::Right => vec2(MOVE_SPEED, 0.0),
         }
     }
+
+    pub fn from_key(key: Key) -> Option<Direction> {
+        match key {
+            Key::Up => Some(Direction::Up),
+            Key::Down => Some(Direction::Down),
+            Key::Left => Some(Direction::Left),
+            Key::Right => Some(Direction::Right),
+            _ => None,
+        }
+    }
+
+    pub fn opposite(&self) -> Direction {
+        match self {
+            Direction::Up => Direction::Down,
+            Direction::Down => Direction::Up,
+            Direction::Left => Direction::Right,
+            Direction::Right => Direction::Left,
+        }
+    }
 }
 
 pub struct Model {
@@ -67,6 +86,14 @@ impl Model {
             status: Status::Playing,
         }
     }
+
+    pub fn set_direction(&mut self, direction: Direction) {
+        // the snake should not be able to move in the opposite direction
+        if direction != self.direction.opposite() {
+            self.direction = direction;
+        }
+    }
+
     pub fn move_forward(&mut self) {
         // the head position should be reset to the opoosite side of the window if it goes out of bounds
         let mut head_position = self.snake[0] + self.direction.to_vec2();
