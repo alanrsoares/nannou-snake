@@ -1,10 +1,7 @@
-extern crate nannou;
-
-use nannou::prelude::*;
-
 mod model;
 
 use model::*;
+use nannou::prelude::*;
 
 fn main() {
     nannou::app(model)
@@ -37,9 +34,7 @@ fn event(_app: &App, model: &mut Model, event: Event) {
                 model.toggle_pause();
             }
             KeyPressed(key) => {
-                if let Some(dir) = Direction::from_key(key) {
-                    model.set_direction(dir)
-                }
+                Direction::from_key(key).map(|dir| model.set_direction(dir));
             }
             _ => (),
         },
