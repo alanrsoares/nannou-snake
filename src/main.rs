@@ -28,22 +28,6 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
 }
 
 fn event(_app: &App, model: &mut Model, event: Event) {
-    if model.status != Status::Playing {
-        match event {
-            Event::WindowEvent {
-                simple: Some(event),
-                ..
-            } => match event {
-                KeyPressed(Key::Space) => {
-                    model.toggle_pause();
-                }
-                _ => (),
-            },
-            _ => (),
-        }
-        return;
-    }
-
     match event {
         Event::WindowEvent {
             simple: Some(window_event),
@@ -65,6 +49,7 @@ fn event(_app: &App, model: &mut Model, event: Event) {
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
+
     draw.background().color(GREENYELLOW);
 
     for &point in &model.snake {
@@ -83,6 +68,13 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.text(&model.score.to_string())
         .xy(pt2(HALF_WINDOW_SIZE - 20.0, HALF_WINDOW_SIZE - 20.0))
         .color(BLACK);
+
+    // if the game is paused, draw a pause message
+    if model.status == Status::Paused {
+        draw.text("PAUSED")
+            .xy(pt2(HALF_WINDOW_SIZE - 30.0, HALF_WINDOW_SIZE - 30.0))
+            .color(RED);
+    }
 
     draw.to_frame(app, &frame).unwrap();
 }
