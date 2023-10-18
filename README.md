@@ -2,7 +2,6 @@
 
 A rust implementation of the snake game using [nannou](https://nannou.cc/).
 
-
 ## Getting started
 
 ```bash

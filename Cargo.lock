@@ -1175,7 +1175,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "nannou-game-of-life"
+name = "nannou-snake"
 version = "0.1.0"
 dependencies = [
  "nannou",

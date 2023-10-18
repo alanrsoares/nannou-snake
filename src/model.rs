@@ -3,15 +3,28 @@ extern crate nannou;
 use nannou::prelude::*;
 
 pub const WINDOW_SIZE: f32 = 512.0;
-pub const SQUARE_SIZE: f32 = 10.0;
-pub const MOVE_SPEED: f32 = 1.0;
+
 pub const HALF_WINDOW_SIZE: f32 = WINDOW_SIZE / 2.0;
+
+pub const SQUARE_SIZE: f32 = WINDOW_SIZE / 50.0;
+
+pub const MOVE_SPEED: f32 = SQUARE_SIZE / 5.0;
 
 #[derive(Debug, PartialEq)]
 pub enum Status {
     Playing,
     GameOver,
     Paused,
+}
+
+impl Status {
+    pub fn to_string(&self) -> &str {
+        match self {
+            Status::Playing => "Playing",
+            Status::GameOver => "Game Over",
+            Status::Paused => "Paused",
+        }
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -58,18 +71,12 @@ pub struct Model {
     pub direction: Direction,
     pub status: Status,
     pub score: u32,
+    pub last_updated: std::time::Instant,
 }
 
 impl Model {
     pub fn new() -> Self {
-        let snake = vec![
-            pt2(0.0, 0.0),
-            pt2(-SQUARE_SIZE, 0.0),
-            pt2(-SQUARE_SIZE * 2.0, 0.0),
-            pt2(-SQUARE_SIZE * 3.0, 0.0),
-            pt2(-SQUARE_SIZE * 4.0, 0.0),
-            pt2(-SQUARE_SIZE * 5.0, 0.0),
-        ];
+        let snake = (0..6).map(|i| pt2(-SQUARE_SIZE * i as f32, 0.0)).collect();
 
         let food = pt2(
             random_range(-HALF_WINDOW_SIZE, HALF_WINDOW_SIZE),
@@ -84,17 +91,19 @@ impl Model {
             direction,
             score: 0,
             status: Status::Playing,
+            last_updated: std::time::Instant::now(),
         }
     }
 
-    pub fn set_direction(&mut self, direction: Direction) {
-        // the snake should not be able to move in the opposite direction
+    pub fn change_direction(&mut self, direction: Direction) {
         if direction != self.direction.opposite() {
             self.direction = direction;
         }
     }
 
     pub fn move_forward(&mut self) {
+        self.last_updated = std::time::Instant::now();
+
         // the head position should be reset to the opoosite side of the window if it goes out of bounds
         let mut head_position = self.snake[0] + self.direction.to_vec2();
         if head_position.x > HALF_WINDOW_SIZE {
@@ -134,6 +143,10 @@ impl Model {
             random_range(-HALF_WINDOW_SIZE, HALF_WINDOW_SIZE),
             random_range(-HALF_WINDOW_SIZE, HALF_WINDOW_SIZE),
         );
+
+        while self.snake.contains(&self.food) {
+            self.spawn_food();
+        }
     }
 
     fn increment_score(&mut self) {
