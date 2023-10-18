@@ -49,14 +49,11 @@ fn event(_app: &App, model: &mut Model, event: Event) {
             simple: Some(window_event),
             ..
         } => match window_event {
-            KeyPressed(direction) => match Direction::from_key(direction) {
-                Some(dir) => {
-                    if dir != model.direction.opposite() {
-                        model.direction = dir;
-                    }
+            KeyPressed(key) => {
+                if let Some(dir) = Direction::from_key(key) {
+                    model.set_direction(dir)
                 }
-                None => (),
-            },
+            }
             _ => (),
         },
         _ => (),
