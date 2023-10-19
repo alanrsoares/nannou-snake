@@ -17,7 +17,7 @@ fn model(_app: &App) -> Model {
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
-    if model.status != Status::Playing || model.last_updated.elapsed().as_millis() < (1000 / 60) {
+    if model.status != Status::Playing || model.last_updated.elapsed().as_millis() < (1000 / 30) {
         return;
     }
 
@@ -49,13 +49,13 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     for &point in &model.snake {
         draw.rect()
-            .xy(point)
+            .xy(point * pt2(SQUARE_SIZE, SQUARE_SIZE))
             .wh(vec2(SQUARE_SIZE, SQUARE_SIZE))
             .color(BLACK);
     }
 
     draw.rect()
-        .xy(model.food)
+        .xy(model.food * pt2(SQUARE_SIZE, SQUARE_SIZE))
         .wh(vec2(SQUARE_SIZE, SQUARE_SIZE))
         .color(RED);
 

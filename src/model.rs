@@ -6,9 +6,13 @@ pub const WINDOW_SIZE: f32 = 512.0;
 
 pub const HALF_WINDOW_SIZE: f32 = WINDOW_SIZE / 2.0;
 
-pub const SQUARE_SIZE: f32 = WINDOW_SIZE / 50.0;
+pub const TILES: f32 = 50.0;
 
-pub const MOVE_SPEED: f32 = SQUARE_SIZE / 5.0;
+pub const HALF_TILES: f32 = TILES / 2.0;
+
+pub const SQUARE_SIZE: f32 = WINDOW_SIZE / TILES;
+
+pub const MOVE_SPEED: f32 = 1.0;
 
 #[derive(Debug, PartialEq)]
 pub enum Status {
@@ -79,8 +83,8 @@ impl Model {
         let snake = (0..6).map(|i| pt2(-SQUARE_SIZE * i as f32, 0.0)).collect();
 
         let food = pt2(
-            random_range(-HALF_WINDOW_SIZE, HALF_WINDOW_SIZE),
-            random_range(-HALF_WINDOW_SIZE, HALF_WINDOW_SIZE),
+            random_range(-HALF_TILES, HALF_TILES),
+            random_range(-HALF_TILES, HALF_TILES),
         );
 
         let direction = Direction::Right;
@@ -104,16 +108,16 @@ impl Model {
     pub fn move_forward(&mut self) {
         self.last_updated = std::time::Instant::now();
 
-        // the head position should be reset to the opoosite side of the window if it goes out of bounds
         let mut head_position = self.snake[0] + self.direction.to_vec2();
-        if head_position.x > HALF_WINDOW_SIZE {
-            head_position.x = -HALF_WINDOW_SIZE;
-        } else if head_position.x < -HALF_WINDOW_SIZE {
-            head_position.x = HALF_WINDOW_SIZE;
-        } else if head_position.y > HALF_WINDOW_SIZE {
-            head_position.y = -HALF_WINDOW_SIZE;
-        } else if head_position.y < -HALF_WINDOW_SIZE {
-            head_position.y = HALF_WINDOW_SIZE;
+
+        if head_position.x > HALF_TILES {
+            head_position.x = -HALF_TILES;
+        } else if head_position.x < -HALF_TILES {
+            head_position.x = HALF_TILES;
+        } else if head_position.y > HALF_TILES {
+            head_position.y = -HALF_TILES;
+        } else if head_position.y < -HALF_TILES {
+            head_position.y = HALF_TILES;
         }
 
         // the snake should die if it collides with itself
@@ -123,7 +127,7 @@ impl Model {
         }
 
         // check if the head collides with the food, not just equal matches
-        if head_position.distance(self.food) < SQUARE_SIZE / 2.0 {
+        if head_position.distance(self.food) < 0.75 {
             self.grow();
             self.spawn_food();
             self.increment_score();
@@ -140,11 +144,11 @@ impl Model {
 
     fn spawn_food(&mut self) {
         self.food = pt2(
-            random_range(-HALF_WINDOW_SIZE, HALF_WINDOW_SIZE),
-            random_range(-HALF_WINDOW_SIZE, HALF_WINDOW_SIZE),
+            random_range(-HALF_TILES, HALF_TILES),
+            random_range(-HALF_TILES, HALF_TILES),
         );
 
-        while self.snake.contains(&self.food) {
+        while self.snake.contains(&self.food) || self.snake[0].distance(self.food) < 1.0 {
             self.spawn_food();
         }
     }
