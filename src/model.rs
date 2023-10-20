@@ -49,8 +49,8 @@ impl Direction {
         }
     }
 
-    pub fn from_key(key: Key) -> Option<Direction> {
-        match key {
+    pub fn from_keycode(keycode: Key) -> Option<Direction> {
+        match keycode {
             Key::Up => Some(Direction::Up),
             Key::Down => Some(Direction::Down),
             Key::Left => Some(Direction::Left),
@@ -97,6 +97,10 @@ impl Model {
             status: Status::Playing,
             last_updated: std::time::Instant::now(),
         }
+    }
+
+    pub fn reset(&mut self) {
+        *self = Model::new();
     }
 
     pub fn change_direction(&mut self, direction: Direction) {

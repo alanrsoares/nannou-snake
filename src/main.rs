@@ -1,7 +1,7 @@
 mod model;
 
 use model::*;
-use nannou::prelude::*;
+use nannou::{prelude::*, text::font};
 
 fn main() {
     nannou::app(model)
@@ -31,10 +31,14 @@ fn event(_app: &App, model: &mut Model, event: Event) {
             ..
         } => match window_event {
             KeyPressed(Key::Space) => {
-                model.toggle_pause();
+                if model.status == Status::GameOver {
+                    model.reset();
+                } else {
+                    model.toggle_pause();
+                }
             }
-            KeyPressed(key) => {
-                Direction::from_key(key).map(|dir| model.change_direction(dir));
+            KeyPressed(keycode) => {
+                Direction::from_keycode(keycode).map(|dir| model.change_direction(dir));
             }
             _ => (),
         },
@@ -67,6 +71,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     // if the game is paused, draw a pause message
     if model.status != Status::Playing {
         draw.text(model.status.to_string())
+            .font(font::default_notosans())
             .xy(pt2(HALF_WINDOW_SIZE - 30.0, HALF_WINDOW_SIZE - 30.0))
             .color(RED);
     }
