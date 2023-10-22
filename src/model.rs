@@ -114,15 +114,21 @@ impl Model {
 
         let mut head_position = self.snake[0] + self.direction.to_vec2();
 
-        if head_position.x > HALF_TILES {
-            head_position.x = -HALF_TILES;
+        head_position.x = if head_position.x > HALF_TILES {
+            -HALF_TILES
         } else if head_position.x < -HALF_TILES {
-            head_position.x = HALF_TILES;
-        } else if head_position.y > HALF_TILES {
-            head_position.y = -HALF_TILES;
+            HALF_TILES
+        } else {
+            head_position.x
+        };
+
+        head_position.y = if head_position.y > HALF_TILES {
+            -HALF_TILES
         } else if head_position.y < -HALF_TILES {
-            head_position.y = HALF_TILES;
-        }
+            HALF_TILES
+        } else {
+            head_position.y
+        };
 
         // the snake should die if it collides with itself
         if self.snake.contains(&head_position) {

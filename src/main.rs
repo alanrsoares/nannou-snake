@@ -3,6 +3,8 @@ mod model;
 use model::*;
 use nannou::{prelude::*, text::font};
 
+const FRAME_DURATION_MS: u128 = 75;
+
 fn main() {
     nannou::app(model)
         .update(update)
@@ -17,7 +19,10 @@ fn model(_app: &App) -> Model {
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
-    if model.status != Status::Playing || model.last_updated.elapsed().as_millis() < (1000 / 30) {
+    let is_ready = model.status == Status::Playing
+        && model.last_updated.elapsed().as_millis() >= FRAME_DURATION_MS;
+
+    if !is_ready {
         return;
     }
 
