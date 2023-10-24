@@ -51,10 +51,10 @@ impl Direction {
 
     pub fn from_keycode(keycode: Key) -> Option<Direction> {
         match keycode {
-            Key::Up => Some(Direction::Up),
-            Key::Down => Some(Direction::Down),
-            Key::Left => Some(Direction::Left),
-            Key::Right => Some(Direction::Right),
+            Key::Up | Key::W => Some(Direction::Up),
+            Key::Down | Key::S => Some(Direction::Down),
+            Key::Left | Key::A => Some(Direction::Left),
+            Key::Right | Key::D => Some(Direction::Right),
             _ => None,
         }
     }

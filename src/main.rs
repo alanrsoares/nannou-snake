@@ -54,13 +54,13 @@ fn event(_app: &App, model: &mut Model, event: Event) {
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
 
-    draw.background().color(GREENYELLOW);
+    draw.background().color(BLACK);
 
     for &point in &model.snake {
         draw.rect()
             .xy(point * pt2(SQUARE_SIZE, SQUARE_SIZE))
             .wh(vec2(SQUARE_SIZE, SQUARE_SIZE))
-            .color(BLACK);
+            .color(GREENYELLOW);
     }
 
     draw.rect()
@@ -71,7 +71,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     // draw the score in the top right corner
     draw.text(&model.score.to_string())
         .xy(pt2(HALF_WINDOW_SIZE - 10.0, HALF_WINDOW_SIZE - 10.0))
-        .color(BLACK);
+        .color(GREENYELLOW);
 
     // if the game is paused, draw a pause message
     if model.status != Status::Playing {
