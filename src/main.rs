@@ -75,6 +75,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     // if the game is paused, draw a pause message
     if model.status != Status::Playing {
+        draw.rect()
+            .w_h(WINDOW_SIZE, WINDOW_SIZE)
+            .rgba(0.0, 0.0, 0.0, 0.7);
+
         draw.text(model.status.to_string())
             .font(font::default_notosans())
             .xy(pt2(HALF_WINDOW_SIZE - 30.0, HALF_WINDOW_SIZE - 30.0))
